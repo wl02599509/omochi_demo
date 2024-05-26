@@ -9,7 +9,6 @@ env: # 共通環境變數
   RUBY_VERSION: '3.2.2'
   NODE_VERSION: '22'
   RAILS_ENV: production
-  RAILS_MASTER_KEY: ${{ secrets.RAILS_SECRET_KEY }}
 
 jobs:
   assets:
@@ -24,16 +23,3 @@ jobs:
     - run: gem install specific_install
     - run: gem specific_install -l https://github.com/mikik0/omochi.git
     - run: omochi verify --github
-    - name: Set up Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-    - run: yarn install # 直接執行命令的情況
-    - run: echo "RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}" >> $GITHUB_ENV
-    - run: bundle exec rake assets:precompile
-    - name: Archive precompiled assets
-      uses: actions/upload-artifact@v3
-      with:
-        name: assets
-        path: public/
-        retention-days: 7
